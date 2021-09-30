@@ -13,9 +13,9 @@
     <div class="btn-group" appDropdown>
       <button role="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">Manage Recipe <span class="caret"></span></button>
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" (click)="addToShoppingList()" style="cursor: pointer;">To Shopping List</a></li>
-        <li><a class="dropdown-item" href="#">Edit Recipe</a></li>
-        <li><a class="dropdown-item" href="#">Delete Recipe</a></li>
+        <li><a class="dropdown-item" style="cursor: pointer;" (click)="addToShoppingList()">To Shopping List</a></li>
+        <li><a class="dropdown-item" style="cursor: pointer;" (click)="onEditRecipe()">Edit Recipe</a></li>
+        <li><a class="dropdown-item" style="cursor: pointer;">Delete Recipe</a></li>
       </ul>
     </div>
   </div>
