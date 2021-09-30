@@ -1,4 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { ShoppingListService } from 'src/app/services/shopping-list.service';
 import { Ingredient } from '../../recipes/models/Ingredient.model';
 
@@ -9,19 +10,45 @@ import { Ingredient } from '../../recipes/models/Ingredient.model';
 })
 export class ShoppingEditComponent implements OnInit {
 
-  @ViewChild('nameInput', { static: false }) nameInputRef: ElementRef;
-  @ViewChild('amountImput', { static: false }) amountInputRef: ElementRef;
+  @ViewChild('f', { static: false }) shoppingListForm: NgForm;
+  editMode = false;
+  editedItemIndex: number;
+  editedItem: Ingredient;
 
   constructor(private shoppingListService: ShoppingListService) { }
 
   ngOnInit(): void {
+    this.shoppingListService.startedEditing.subscribe((index: number) => {
+      this.editedItemIndex = index;
+      this.editMode = true;
+      this.editedItem = this.shoppingListService.getIngredient(index);
+      setTimeout(() => {
+        this.shoppingListForm.setValue({
+          name: this.editedItem.name,
+          amount: this.editedItem.amount
+        });
+      }, );
+    });
   }
 
-  onAddItem() {
-    const ingreName = this.nameInputRef.nativeElement.value;
-    const ingreAmt = this.amountInputRef.nativeElement.value;
-    const newIngredient = new Ingredient(ingreName, ingreAmt);
-    this.shoppingListService.addIngradient(newIngredient);
+  onSubmit(form: NgForm) {
+    const value = form.value;
+    const newIngredient = new Ingredient(value.name, value.amount);
+    this.editMode ?
+      this.shoppingListService.updateIngredient(this.editedItemIndex, newIngredient) :
+      this.shoppingListService.addIngredient(newIngredient);
+    this.editMode = false;
+    form.reset();
+  }
+
+  onClear() {
+    this.shoppingListForm.reset();
+    this.editMode = false;
+  }
+
+  onDelete() {
+    this.shoppingListService.deleteIngredient(this.editedItemIndex);
+    this.onClear();
   }
 
 }

@@ -7,23 +7,38 @@ import { Ingredient } from '../components/recipes/models/Ingredient.model';
 export class ShoppingListService {
 
   ingredietsChanged = new EventEmitter<Ingredient[]>();
+  startedEditing = new EventEmitter<number>();
 
   ingredients: Ingredient[] = [];
 
   constructor() { }
 
+  getIngredient(index: number) {
+    return this.ingredients[index];
+  }
+
   getIngredients() {
     return this.ingredients.slice();
   }
 
-  addIngradient(ingredient: Ingredient) {
+  addIngredient(ingredient: Ingredient) {
     this.ingredients.push(ingredient);
+    this.ingredietsChanged.emit(this.ingredients.slice());
+  }
+
+  updateIngredient(index: number, newIngredient: Ingredient) {
+    this.ingredients[index] = newIngredient;
+    this.ingredietsChanged.emit(this.ingredients.slice());
+  }
+
+  deleteIngredient(index: number) {
+    this.ingredients.splice(index, 1);
     this.ingredietsChanged.emit(this.ingredients.slice());
   }
 
   addIngradients(ingredients: Ingredient[]) {
     for (let ingredient of ingredients) {
-      this.addIngradient(ingredient);
+      this.addIngredient(ingredient);
     }
   }
 }

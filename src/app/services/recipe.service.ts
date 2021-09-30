@@ -9,6 +9,7 @@ import { ShoppingListService } from './shopping-list.service';
 export class RecipeService {
 
   recipeSelected = new EventEmitter<Recipe>();
+  recipesChanged = new EventEmitter<Recipe[]>();
 
   private recipes: Recipe[] = [
     new Recipe('Chicken Biryani', 'This is simply biryani', './assets/img/depositphotos_49622201-stock-photo-hyderabadi-biryani-a-popular-chicken.jpg', [
@@ -33,6 +34,21 @@ export class RecipeService {
 
   addIngredientsToList(ingredients: Ingredient[]) {
     this.shoppingListService.addIngradients(ingredients);
+  }
+
+  addRecipe(recipe: Recipe) {
+    this.recipes.push(recipe);
+    this.recipesChanged.emit(this.recipes.slice());
+  }
+
+  updateRecipe(index: number, newRecipe: Recipe) {
+    this.recipes[index] = newRecipe;
+    this.recipesChanged.emit(this.recipes.slice());
+  }
+
+  deleteRecipe(index: number) {
+    this.recipes.splice(index, 1);
+    this.recipesChanged.emit(this.recipes.slice());
   }
 
 }
